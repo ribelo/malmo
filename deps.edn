@@ -1,0 +1,7 @@
+{:paths   ["src"]
+ :deps    {com.github.haifengl/smile-core   {:mvn/version "1.5.3"}
+           com.github.haifengl/smile-netlib {:mvn/version "1.5.3"}
+           ml.dmlc/xgboost4j                {:mvn/version "0.90"}
+           ribelo.haag                      {:git/url "https://github.com/ribelo/haag"
+                                             :sha     "c933bcdb14545a763b25315d9244ff9ffc5c479a"}}
+ :aliases {:dev {:extra-deps {org.clojure/clojure {:mvn/version "1.10.1"}}}}}
