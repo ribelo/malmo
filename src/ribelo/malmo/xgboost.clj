@@ -19,7 +19,7 @@
         (->array x)
         (count y)
         (count (first x)))
-        (.setLabel (->array y)))
+        (.setLabel (float-array y)))
       (DMatrix.
        (->array x)
        (count x)
