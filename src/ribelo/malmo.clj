@@ -12,9 +12,11 @@
 
 (defn data->x
   ([data]
-   (data->x (keys (first data)) Double/TYPE data))
-  ([ks data]
    (data->x (keys (first data)) data))
+  ([ks data]
+   (into []
+         (map (fn [m]
+                (reduce (fn [acc k] (conj acc (get m k))) [] ks))) data))
   ([ks atype data]
    (into-array
     (mapv (fn [m]
@@ -22,6 +24,6 @@
 
 (defn data->y
   ([k data]
-   (data->y k Double/TYPE data))
+   (into [] (map k) data))
   ([k atype data]
    (into-array atype (mapv k data))))
