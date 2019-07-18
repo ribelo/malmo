@@ -95,10 +95,10 @@
   ([coll]
    (coll->y (keys (first coll)) coll))
   ([k coll]
-   (into [] (map (fn [m] (get k m))) coll))
+   (into [] (map (fn [m] (get m k))) coll))
   ([atype k coll]
    (->> coll
-        (into [] (map (fn [m] (get k m))))
+        (into [] (map (fn [m] (get m k))))
         (into-array (h/dtype atype)))))
 
 (defmethod coll->y [java.util.Collection java.lang.Number]
