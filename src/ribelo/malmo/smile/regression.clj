@@ -1,16 +1,19 @@
 (ns ribelo.malmo.smile.regression
   (:require
+   [ribelo.haag :as h]
    [ribelo.malmo :as ml]
    [ribelo.visby.math :as math])
   (:import
    (smile.regression
     ElasticNet
     GaussianProcessRegression
+    GradientTreeBoost
     GradientTreeBoost$Trainer
     GradientTreeBoost$Loss
     LASSO
     OLS
     RidgeRegression
+    RandomForest
     RandomForest$Trainer
     SVR)
    (smile.math.kernel GaussianKernel)))
@@ -20,8 +23,22 @@
       (def train-y [2 4 6 8])
       (def test-x  [[5 4 0]])))
 
-(defn predict [model coll]
-  (.predict model (ml/coll->x :double coll)))
+(derive ElasticNet :smile/model)
+(derive GaussianProcessRegression :smile/model)
+(derive GradientTreeBoost :smile/model)
+(derive LASSO :smile/model)
+(derive OLS :smile/model)
+(derive RidgeRegression :smile/model)
+(derive RandomForest :smile/model)
+(derive SVR :smile/model)
+
+(defmethod ml/predict [:smile/model clojure.lang.PersistentVector]
+  ([model coll]
+   (.predict model (ml/coll->x :double coll))))
+
+(defmethod ml/predict [:smile/mode h/double-double-array-type]
+  ([model arr]
+   (.predict model arr)))
 
 (defn elastic-net
   ([train-x train-y ^double lambda-1 ^double lambda-2]
@@ -62,7 +79,7 @@
      (when shrinkage (.setShrinkage trainer shrinkage))
      (when f         (.setSamplingRates trainer f))
      (.train trainer (ml/coll->x :double train-x)
-             (ml/coll->y :double train-y)))))
+                     (ml/coll->y :double train-y)))))
 
 (comment
   (predict (gradient-tree-boost train-x train-y {:ntrees 500}) test-x))

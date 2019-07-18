@@ -1,8 +1,10 @@
 (ns ribelo.malmo
   (:require
    [ribelo.haag :as h]
-   [criterium.core :refer [quick-bench]]
-   [ribelo.visby.math :as math]))
+   [ribelo.visby.math :as math]
+   [taoensso.nippy :as nippy])
+  (:import
+   (ml.dmlc.xgboost4j.java XGBoost)))
 
 (defn train-test-split
   ([^double p coll]
@@ -12,13 +14,13 @@
          n (math/floor (* p c))]
      (split-at n (if shuffle? (shuffle coll) coll)))))
 
-(defn maps->2d-vec [ks maps]
+(defn- maps->2d-vec [ks maps]
   (->> maps
        (into []
          (map (fn [m]
                 (reduce (fn [acc k] (conj acc (get m k))) [] ks))))))
 
-(defn maps->1d-vec [ks maps]
+(defn- maps->1d-vec [ks maps]
   (->> maps
        (into []
              (comp
@@ -26,7 +28,7 @@
                      (reduce (fn [acc k] (conj acc (get m k))) [] ks)))
               cat))))
 
-(defn maps->2d-arr
+(defn- maps->2d-arr
   ([ks maps]
    (maps->2d-arr :double ks maps))
   ([atype ks maps]
@@ -36,7 +38,7 @@
                      (into-array (h/dtype atype) (reduce (fn [acc k] (conj acc (get m k))) [] ks)))))
         (into-array))))
 
-(defn maps->1d-arr
+(defn- maps->1d-arr
   ([ks maps]
    (maps->1d-arr :double ks maps))
   ([atype ks maps]
@@ -123,3 +125,17 @@
    [(coll->x xks coll) (coll->y yk coll)])
   ([atype xks yk coll]
    [(coll->x atype xks coll) (coll->y atype yk coll)]))
+
+(defmulti predict
+  (fn [model coll] [(type model) (type coll)]))
+
+(defmulti save-model type)
+
+(defn load-model [^String path]
+  (or
+   (try
+     (nippy/thaw-from-file path)
+     (catch Exception _))
+   (try
+     (XGBoost/loadModel path)
+     (catch Exception _))))

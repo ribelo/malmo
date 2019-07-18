@@ -1,4 +1,7 @@
 (ns ribelo.malmo.xgboost
+  (:require
+   [ribelo.haag :as h]
+   [ribelo.malmo :as ml])
   (:import
    (ml.dmlc.xgboost4j.java XGBoost
                            Booster
@@ -77,11 +80,19 @@
                    early-stopping
                    booster)))
 
-(defn predict [^Booster model ^DMatrix dmatrix]
-  (into [] cat (.predict model dmatrix)))
+(def train fit)
 
-(defn thaw-from-file [^String path]
-  (XGBoost/loadModel path))
+(defmethod ml/predict [Booster DMatrix]
+  ([model coll]
+   (into [] cat (.predict model coll))))
 
-(defn freeze-to-file [^Booster model ^String path]
-  (.saveModel model path))
+(defmethod ml/predict [Booster h/double-double-array-type]
+  ([model arr]
+   (into [] cat (.predict model (dmatrix (->array arr))))))
+
+(defmethod ml/predict [Booster clojure.lang.PersistentVector]
+  ([model arr]
+   (into [] cat (.predict model (dmatrix (->array arr))))))
+
+(defmethod ml/save-model Booster
+  [model ^String path] (.saveModel model path))
