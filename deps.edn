@@ -5,5 +5,5 @@
            ribelo.visby                     {:git/url "https://github.com/ribelo/visby"
                                              :sha     "9d0eeab83277a75f0483a121e5dc28596f467c06"}
            ribelo.haag                      {:git/url "https://github.com/ribelo/haag"
-                                             :sha     "c933bcdb14545a763b25315d9244ff9ffc5c479a"}}
+                                             :sha     "cf658b38642b109908bdc491c69e7a7770c47223"}}
  :aliases {:dev {:extra-deps {org.clojure/clojure {:mvn/version "1.10.1"}}}}}
