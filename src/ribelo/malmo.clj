@@ -115,3 +115,11 @@
   ([coll] coll)
   ([atype coll]
    (into-array (h/dtype atype) coll)))
+
+(defn coll->xy
+  ([coll {:keys [feature-columns label-columns]}]
+   (coll->xy feature-columns label-columns coll))
+  ([xks yk coll]
+   [(coll->x xks coll) (coll->y yk coll)])
+  ([atype xks yk coll]
+   [(coll->x atype xks coll) (coll->y atype yk coll)]))
