@@ -5,7 +5,7 @@
   (:import
    (smile.regression
     ElasticNet
-            ;; GaussianProcessRegression
+    GaussianProcessRegression
     GradientTreeBoost$Trainer
     GradientTreeBoost$Loss
     LASSO
