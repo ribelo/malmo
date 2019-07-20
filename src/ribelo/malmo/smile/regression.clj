@@ -1,5 +1,6 @@
 (ns ribelo.malmo.smile.regression
   (:require
+   [taoensso.nippy :as nippy]
    [ribelo.haag :as h]
    [ribelo.malmo :as ml]
    [ribelo.visby.math :as math])
@@ -39,6 +40,9 @@
 (defmethod ml/predict [:smile/mode h/double-double-array-type]
   ([model arr]
    (.predict model arr)))
+
+(defmethod ml/save-model :smile/model
+  [model ^String path] (nippy/freeze-to-file path model))
 
 (defn elastic-net
   ([train-x train-y ^double lambda-1 ^double lambda-2]
